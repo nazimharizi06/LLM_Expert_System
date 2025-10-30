@@ -1,0 +1,7 @@
+tunnel: b1efad27-26f9-408a-9a81-9ea5f23bb0f3
+credentials-file: C:\Users\zimzi\.cloudflared\b1efad27-26f9-408a-9a81-9ea5f23bb0f3.json
+
+ingress:
+  - hostname: api.llmresearchapi.com
+    service: http://localhost:8888
+  - service: http_status:404
