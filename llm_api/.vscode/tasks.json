@@ -31,7 +31,8 @@
         "Run API",
         "Run Cloudflare Tunnel"
       ],
-      "dependsOrder": "parallel"
+      "dependsOrder": "parallel",
+      "problemMatcher": []
     }
   ]
 }
