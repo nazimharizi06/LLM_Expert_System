@@ -5,13 +5,23 @@
       "label": "Run API",
       "type": "shell",
       "command": "uvicorn api_model:app --host 127.0.0.1 --port 8888",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
       "isBackground": true,
       "problemMatcher": []
     },
     {
       "label": "Run Cloudflare Tunnel",
       "type": "shell",
-      "command": ".\\cloudflared.exe tunnel --protocol http2 --config .\\config.yml run llm_api",
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "while ($true) { .\\cloudflared.exe tunnel --protocol http2 --config .\\config.yml run llm_api; Start-Sleep -Seconds 1 }"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
       "isBackground": true,
       "problemMatcher": []
     },
@@ -21,8 +31,7 @@
         "Run API",
         "Run Cloudflare Tunnel"
       ],
-      "dependsOrder": "parallel",
-      "problemMatcher": []
+      "dependsOrder": "parallel"
     }
   ]
 }
