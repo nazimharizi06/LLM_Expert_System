@@ -1,0 +1,28 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run API",
+      "type": "shell",
+      "command": "uvicorn api_model:app --host 127.0.0.1 --port 8888",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Cloudflare Tunnel",
+      "type": "shell",
+      "command": ".\\cloudflared.exe tunnel --protocol http2 --config .\\config.yml run llm_api",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Start API + Tunnel",
+      "dependsOn": [
+        "Run API",
+        "Run Cloudflare Tunnel"
+      ],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    }
+  ]
+}
