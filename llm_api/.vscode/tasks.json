@@ -2,9 +2,19 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Run API",
+      "label": "Run Main API",
       "type": "shell",
       "command": "uvicorn api_model:app --host 127.0.0.1 --port 8888",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Angular API",
+      "type": "shell",
+      "command": "uvicorn angular_model.api_angle_model:app --host 127.0.0.1 --port 8890",
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -26,13 +36,13 @@
       "problemMatcher": []
     },
     {
-      "label": "Start API + Tunnel",
+      "label": "Start All APIs + Tunnel",
       "dependsOn": [
-        "Run API",
+        "Run Main API",
+        "Run Angular API",
         "Run Cloudflare Tunnel"
       ],
-      "dependsOrder": "parallel",
-      "problemMatcher": []
+      "dependsOrder": "parallel"
     }
   ]
 }

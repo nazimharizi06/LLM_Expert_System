@@ -5,4 +5,8 @@ protocol: http2
 ingress:
   - hostname: api.llmresearchapi.com
     service: http://127.0.0.1:8888
+
+  - hostname: angular.llmresearchapi.com
+    service: http://127.0.0.1:8890
+    
   - service: http_status:404
