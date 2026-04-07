@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 from .angle_model_utils import predict_received_power
 
 app = FastAPI(
-    title="THz Angular Power Prediction API",
+    title="THz Rx Angular Power Prediction API",
     description="Predict waveform-derived received power from angular THz measurements.",
     version="1.0.0",
     servers=[{"url": "https://angular.llmresearchapi.com"}]
