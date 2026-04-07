@@ -4,7 +4,7 @@
     {
       "label": "Run Main API",
       "type": "shell",
-      "command": "uvicorn api_model:app --host 127.0.0.1 --port 8888",
+      "command": "uvicorn baseline_model.api_model:app --host 127.0.0.1 --port 8888",
       "options": {
         "cwd": "${workspaceFolder}"
       },

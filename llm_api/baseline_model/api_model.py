@@ -1,10 +1,13 @@
+from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 import joblib
-from model_utils import predict_received_power
+from baseline_model.model_utils import predict_received_power
 
 # load trained KNN
-MODEL_PATH = "knn_model.pkl"
+BASE_DIR = Path(__file__).resolve().parent
+MODEL_PATH = BASE_DIR / "knn_model.pkl"
+
 try:
     model = joblib.load(MODEL_PATH)
     print(f"Loaded model from {MODEL_PATH}")
@@ -43,3 +46,4 @@ def predict_rx_power(input_data: RxPowerInput):
         }
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    

@@ -1,7 +1,9 @@
+from pathlib import Path
 import pandas as pd
 import joblib
 
-MODEL_PATH = "knn_model.pkl"  # path for KNN 
+BASE_DIR = Path(__file__).resolve().parent
+MODEL_PATH = BASE_DIR / "knn_model.pkl"  # path for KNN 
 
 def load_model_from_file(path=MODEL_PATH):
     return joblib.load(path)
