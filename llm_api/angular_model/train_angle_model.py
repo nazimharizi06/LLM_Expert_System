@@ -12,10 +12,7 @@ df = pd.read_csv("angle_dataset.csv")
 
 # Input features
 X = df[[
-    "tx_angle_deg",
-    "rx_angle_deg",
-    "tx_antenna",
-    "rx_antenna",
+    "angle_deg",
     "modulation_qam"
 ]]
 

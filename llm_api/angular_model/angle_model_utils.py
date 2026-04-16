@@ -9,10 +9,7 @@ model = joblib.load(MODEL_PATH)
 
 def predict_received_power(input_data):
     features = np.array([[
-        input_data.tx_angle_deg,
-        input_data.rx_angle_deg,
-        input_data.tx_antenna,
-        input_data.rx_antenna,
+        input_data.angle_deg,
         input_data.modulation_qam
     ]])
 

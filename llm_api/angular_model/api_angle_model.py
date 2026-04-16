@@ -10,10 +10,7 @@ app = FastAPI(
 )
 
 class AngleModelInput(BaseModel):
-    tx_angle_deg: float = Field(..., description="Transmit antenna angle in degrees")
-    rx_angle_deg: float = Field(..., description="Receive antenna angle in degrees")
-    tx_antenna: int = Field(..., description="Transmit antenna size, e.g. 26 or 46")
-    rx_antenna: int = Field(..., description="Receive antenna size, e.g. 26 or 46")
+    angle_deg: float = Field(..., description="Single antenna angle in degrees")
     modulation_qam: int = Field(..., description="Modulation order, e.g. 2, 4, 16, or 64")
 
 @app.post("/predict-angle-power")

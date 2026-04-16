@@ -24,8 +24,6 @@ for root, dirs, files in os.walk(base_path):
         modulation_match = re.search(r'_(\d+)QAM_', file)
         angle_match = re.search(r'(-?\d+)deg', file)
 
-        folder_name = os.path.basename(root)   # e.g. 26-46
-        tx_rx = folder_name.split("-")
 
         if modulation_match:
             modulation_qam = int(modulation_match.group(1))
@@ -37,8 +35,6 @@ for root, dirs, files in os.walk(base_path):
         else:
             angle_deg = 0
 
-        tx_antenna = int(tx_rx[0])
-        rx_antenna = int(tx_rx[1])
 
         mat_data = loadmat(full_path)
 
@@ -50,10 +46,7 @@ for root, dirs, files in os.walk(base_path):
         received_power = (signal ** 2).mean()
 
         row = {
-            "tx_angle_deg": angle_deg,
-            "rx_angle_deg": angle_deg,
-            "tx_antenna": tx_antenna,
-            "rx_antenna": rx_antenna,
+            "angle_deg": angle_deg,
             "modulation_qam": modulation_qam,
             "received_power": received_power,
             "file_name": file
