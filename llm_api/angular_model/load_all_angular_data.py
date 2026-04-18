@@ -24,9 +24,6 @@ for root, dirs, files in os.walk(base_path):
         full_path = os.path.join(root, file)
         print("Loading:", full_path)
 
-        # Example filename:
-        # AngularComm_16QAM_300GHz_26-26_-12deg_000.mat
-
         modulation_match = re.search(r'_(\d+)QAM_', file)
         angle_match = re.search(r'(-?\d+)deg', file)
 
@@ -38,15 +35,11 @@ for root, dirs, files in os.walk(base_path):
             continue
 
         try:
-            tx_antenna = int(tx_rx[0])
-            rx_antenna = int(tx_rx[1])
+            tx_antenna_mm = int(tx_rx[0])
+            rx_antenna_mm = int(tx_rx[1])
         except ValueError:
             print(f"Skipping {file}: could not parse antenna pair from folder '{folder_name}'")
             continue
-
-        # Use antenna labels as gain proxies
-        G_tx_db = tx_antenna
-        G_rx_db = rx_antenna
 
         if modulation_match:
             modulation_qam = int(modulation_match.group(1))
@@ -75,11 +68,12 @@ for root, dirs, files in os.walk(base_path):
             print(f"Skipping {file}: empty signal")
             continue
 
-        received_power = (signal ** 2).mean()/50
+        # waveform is in volts; assume 50-ohm RF system
+        received_power = (signal ** 2).mean() / 50
 
         row = {
-            "G_tx_db": G_tx_db,
-            "G_rx_db": G_rx_db,
+            "tx_antenna_mm": tx_antenna_mm,
+            "rx_antenna_mm": rx_antenna_mm,
             "angle_deg": angle_deg,
             "modulation_qam": modulation_qam,
             "received_power": received_power,

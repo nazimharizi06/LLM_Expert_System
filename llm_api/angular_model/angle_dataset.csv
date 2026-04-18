@@ -1,4 +1,4 @@
-G_tx_db,G_rx_db,angle_deg,modulation_qam,received_power,file_name
+tx_antenna_mm,rx_antenna_mm,angle_deg,modulation_qam,received_power,file_name
 26,26,-12,16,1.1481897834382117e-08,AngularComm_16QAM_300GHz_26-26_-12deg_000.mat
 26,26,-15,16,5.331144161703542e-09,AngularComm_16QAM_300GHz_26-26_-15deg_000.mat
 26,26,-18,16,6.006804135661656e-09,AngularComm_16QAM_300GHz_26-26_-18deg_000.mat

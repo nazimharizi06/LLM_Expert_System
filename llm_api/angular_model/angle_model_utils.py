@@ -9,8 +9,8 @@ model = joblib.load(MODEL_PATH)
 
 def predict_received_power(input_data):
     features = np.array([[
-        input_data.G_tx_db,
-        input_data.G_rx_db,
+        input_data.tx_antenna_mm,
+        input_data.rx_antenna_mm,
         input_data.angle_deg,
         input_data.modulation_qam
     ]])
