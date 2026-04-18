@@ -10,6 +10,10 @@ app = FastAPI(
 )
 
 class AngleModelInput(BaseModel):
+    Tx_power_dBm: float = Field(..., description="Transmit power in dBm")
+    G_tx_db: float = Field(..., description="Transmit antenna gain proxy")
+    G_rx_db: float = Field(..., description="Receive antenna gain proxy")
+    distance: float = Field(..., description="Distance in meters")
     angle_deg: float = Field(..., description="Single antenna angle in degrees")
     modulation_qam: int = Field(..., description="Modulation order, e.g. 2, 4, 16, or 64")
 

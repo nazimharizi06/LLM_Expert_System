@@ -8,15 +8,21 @@ OUTPUT_CSV = os.path.join(BASE_DIR, "angle_dataset.csv")
 
 base_path = r"\\192.168.1.114\THz Research\CommData\Angular"
 
+if not os.path.exists(base_path):
+    raise FileNotFoundError(
+        f"NAS path not found: {base_path}\n"
+        "Make sure the NAS is connected and accessible."
+    )
+
 all_rows = []
 
 for root, dirs, files in os.walk(base_path):
     for file in files:
-        if not file.endswith(".mat"):
+        if not file.lower().endswith(".mat"):
             continue
 
         full_path = os.path.join(root, file)
-        print("Loading:", file)
+        print("Loading:", full_path)
 
         # Example filename:
         # AngularComm_16QAM_300GHz_26-26_-12deg_000.mat
@@ -24,6 +30,23 @@ for root, dirs, files in os.walk(base_path):
         modulation_match = re.search(r'_(\d+)QAM_', file)
         angle_match = re.search(r'(-?\d+)deg', file)
 
+        folder_name = os.path.basename(root)   # e.g. 26-46
+        tx_rx = folder_name.split("-")
+
+        if len(tx_rx) != 2:
+            print(f"Skipping {file}: invalid folder format '{folder_name}'")
+            continue
+
+        try:
+            tx_antenna = int(tx_rx[0])
+            rx_antenna = int(tx_rx[1])
+        except ValueError:
+            print(f"Skipping {file}: could not parse antenna pair from folder '{folder_name}'")
+            continue
+
+        # Use antenna labels as gain proxies
+        G_tx_db = tx_antenna
+        G_rx_db = rx_antenna
 
         if modulation_match:
             modulation_qam = int(modulation_match.group(1))
@@ -35,17 +58,28 @@ for root, dirs, files in os.walk(base_path):
         else:
             angle_deg = 0
 
+        try:
+            mat_data = loadmat(full_path)
+        except Exception as e:
+            print(f"Skipping {file}: {e}")
+            continue
 
-        mat_data = loadmat(full_path)
+        if "data" not in mat_data:
+            print(f"Skipping {file}: no 'data' key found")
+            continue
 
-        # confirmed key from your test
         signal_data = mat_data["data"]
         signal = signal_data.flatten()
 
-        # temporary proxy target
-        received_power = (signal ** 2).mean()
+        if len(signal) == 0:
+            print(f"Skipping {file}: empty signal")
+            continue
+
+        received_power = (signal ** 2).mean()/50
 
         row = {
+            "G_tx_db": G_tx_db,
+            "G_rx_db": G_rx_db,
             "angle_deg": angle_deg,
             "modulation_qam": modulation_qam,
             "received_power": received_power,
@@ -54,6 +88,9 @@ for root, dirs, files in os.walk(base_path):
 
         all_rows.append(row)
 
+if not all_rows:
+    raise ValueError("No .mat files were loaded from the NAS path.")
+
 df = pd.DataFrame(all_rows)
 
 print("\nFinal dataset preview:")
@@ -61,6 +98,6 @@ print(df.head())
 
 print("\nDataset shape:", df.shape)
 
-df.to_csv("angle_dataset.csv", index=False)
+df.to_csv(OUTPUT_CSV, index=False)
 
-print("\nSaved combined dataset as angle_dataset.csv")
+print(f"\nSaved combined dataset as {OUTPUT_CSV}")

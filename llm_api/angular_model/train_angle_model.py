@@ -8,10 +8,16 @@ DATA_PATH = os.path.join(BASE_DIR, "angle_dataset.csv")
 MODEL_PATH = os.path.join(BASE_DIR, "angle_model.pkl")
 
 # Load the combined angular dataset
-df = pd.read_csv("angle_dataset.csv")
+df = pd.read_csv(DATA_PATH)
+
+print("Dataset preview:")
+print(df.head())
+print("\nColumns:", df.columns.tolist())
 
 # Input features
 X = df[[
+    "G_tx_db",
+    "G_rx_db",
     "angle_deg",
     "modulation_qam"
 ]]
@@ -24,7 +30,6 @@ knn = KNeighborsRegressor(n_neighbors=3, weights="distance")
 knn.fit(X, y)
 
 # Save model
-joblib.dump(knn, "angle_model.pkl")
+joblib.dump(knn, MODEL_PATH)
 
-print("Angle model trained and saved to angle_model.pkl.")
-
+print(f"Angle model trained and saved to {MODEL_PATH}.")
