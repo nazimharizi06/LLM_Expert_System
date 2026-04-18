@@ -19,7 +19,14 @@ class AngleModelInput(BaseModel):
 
 @app.post("/predict-angle-power")
 def predict_angle_power(data: AngleModelInput):
-    prediction = predict_received_power(data)
+    predicted_power_watts = predict_received_power(data)
+
+    if predicted_power_watts > 0:
+        predicted_power_dbm = 10 * math.log10(predicted_power_watts * 1000)
+    else:
+        predicted_power_dbm = None
+
     return {
-        "predicted_received_power": prediction
+        "predicted_received_power_watts": float(predicted_power_watts),
+        "predicted_received_power_dBm": round(predicted_power_dbm, 2) if predicted_power_dbm is not None else None
     }
