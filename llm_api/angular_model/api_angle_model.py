@@ -22,39 +22,33 @@ SUPPORTED_PAIRS = set(
     .tolist()
 )
 
-# Set these to the actual constants used during collection
-SUPPORTED_TX_POWER_DBM = 10.0
-SUPPORTED_DISTANCE_M = 1.0
-
 app = FastAPI(
     title="THz Rx Angular Power Prediction API",
-    description="Predict waveform-derived received power from angular THz measurements.",
+    description="Predict waveform-derived received power from measured angular THz data using supported antenna pairs, modulation values, and a single dataset angle.",
     version="1.0.0",
     servers=[{"url": "https://angular.llmresearchapi.com"}]
 )
 
 class AngleModelInput(BaseModel):
-    Tx_power_dBm: float = Field(..., description="Transmit power in dBm. Current model only supports the collected constant value.")
-    distance: float = Field(..., description="Distance in meters. Current model only supports the collected constant value.")
-    tx_antenna_mm: int = Field(..., description="Transmit antenna size in mm. Supported values come from the dataset.")
-    rx_antenna_mm: int = Field(..., description="Receive antenna size in mm. Supported values come from the dataset.")
-    angle_deg: float = Field(..., description="Single antenna angle in degrees.")
-    modulation_qam: int = Field(..., description="Supported modulation order from the dataset.")
+    tx_antenna_mm: int = Field(
+        ...,
+        description="Transmit antenna size in mm. Must match a supported value from the dataset."
+    )
+    rx_antenna_mm: int = Field(
+        ...,
+        description="Receive antenna size in mm. Must match a supported value from the dataset."
+    )
+    angle_deg: float = Field(
+        ...,
+        description="Single measured antenna angle in degrees. Must fall within the supported dataset range."
+    )
+    modulation_qam: int = Field(
+        ...,
+        description="Modulation order from the dataset. Must match a supported value."
+    )
 
 @app.post("/predict-angle-power")
 def predict_angle_power(data: AngleModelInput):
-    if data.Tx_power_dBm != SUPPORTED_TX_POWER_DBM:
-        raise HTTPException(
-            status_code=400,
-            detail=f"This model currently supports only Tx_power_dBm = {SUPPORTED_TX_POWER_DBM}."
-        )
-
-    if data.distance != SUPPORTED_DISTANCE_M:
-        raise HTTPException(
-            status_code=400,
-            detail=f"This model currently supports only distance = {SUPPORTED_DISTANCE_M} m."
-        )
-
     if data.tx_antenna_mm not in SUPPORTED_TX_SIZES:
         raise HTTPException(
             status_code=400,
@@ -97,5 +91,6 @@ def predict_angle_power(data: AngleModelInput):
         "predicted_received_power_dBm": round(predicted_power_dbm, 2) if predicted_power_dbm is not None else None,
         "supported_angle_range_deg": [MIN_ANGLE, MAX_ANGLE],
         "supported_modulations": SUPPORTED_MODS,
-        "supported_antenna_pairs_mm": sorted(list(SUPPORTED_PAIRS))
+        "supported_antenna_pairs_mm": sorted(list(SUPPORTED_PAIRS)),
+        "model_note": "This model predicts within the measured dataset configuration and does not extrapolate beyond supported antenna pairs, modulation values, or angle range."
     }
