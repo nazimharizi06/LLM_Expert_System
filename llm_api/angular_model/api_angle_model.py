@@ -4,6 +4,7 @@ from .angle_model_utils import predict_received_power
 import math
 import os
 import pandas as pd
+from fastapi.middleware.cors import CORSMiddleware
 
 BASE_DIR = os.path.dirname(__file__)
 DATA_PATH = os.path.join(BASE_DIR, "angle_dataset.csv")
@@ -27,6 +28,14 @@ app = FastAPI(
     description="Predict waveform-derived received power from measured angular THz data using supported antenna pairs, modulation values, and a single dataset angle.",
     version="1.0.0",
     servers=[{"url": "https://angular.llmresearchapi.com"}]
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 class AngleModelInput(BaseModel):
